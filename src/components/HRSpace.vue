@@ -59,7 +59,10 @@ export default{
         },
         DeleteJob(JobId,index){
             axios.post("http://localhost:8080/HRService/DeleteJob",{"id":JobId}).then((Response=>{
-                alert(Response.data.data)
+                if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+                }
+                
                 if(Response.data.data==="DeleteJob Success"){
                     this.Jobs.splice(index,1);
                 }

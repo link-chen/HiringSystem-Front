@@ -34,10 +34,15 @@ export default{
     },
     mounted(){
         this.id=this.$route.query.data
+        axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwtToken');
         axios.post('http://localhost:8080/UserService/SearchApplyedJob',{"id":parseInt(this.id)}).then((Response=>{
-            if(Response.data.data!=null){
-                this.job=Response.data.data
+            if(Response.data.data==="UnAuthorization"){
+                    alert("No Token")
+                    return
             }
+            sessionStorage.setItem('jwtToken',Response.data.data[0]);
+            axios.defaults.headers.common['Authorization'] = Response.data.data[0];
+            this.job=Response.data.data[1]
         }))
     },
     methods:{
@@ -65,12 +70,21 @@ export default{
             formData.append('file', this.selectedFile);
             formData.append('id',this.id)
 
+
             // Replace the URL with your backend API endpoint
             axios.post('http://localhost:8080/UserService/AddResume', formData)
             .then(response => {
-                if(response.data.data==="AddResumeSuccess"){
+                if(response.data.data==="UnAuthorization"){
+                    alert("No Token")
+                }
+
+                if(response.data.data[1]==="AddResumeSuccess"){
+                    sessionStorage.setItem('jwtToken',response.data.data[0]);
+                    axios.defaults.headers.common['Authorization'] = response.data.data[0];
                     alert("简历提交成功")
-                }else if(response.data.data==="AddResumeFailed"){
+                }else if(response.data.data[1]==="AddResumeFailed"){
+                    sessionStorage.setItem('jwtToken',response.data.data[0]);
+                    axios.defaults.headers.common['Authorization'] = response.data.data[0];
                     alert("未能提交成功，请重试")
                 }
             })

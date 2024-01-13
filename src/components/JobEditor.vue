@@ -39,6 +39,9 @@
           "postedby": parseInt(this.HRId, 10),
           "status": "on"
         }).then((Response=>{
+          if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+          }
           alert(Response.data.data)
         }));
       },

@@ -27,8 +27,10 @@ export default{
     },
     mounted(){
         this.id=this.$route.query.data
-        axios.get("http://localhost:8080/UserService/FindAllJobs").then((Response=>{
-            this.Jobs=Response.data.data
+        axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwtToken');
+        axios.post("http://localhost:8080/UserService/FindAllJobs",{"id":parseInt(this.id)}).then((Response=>{
+            this.Jobs=Response.data.data[1];
+            sessionStorage.setItem('jwtToken',Response.data.data[0]);
         }))
     },
     methods:{
@@ -42,6 +44,9 @@ export default{
         },
         ApplyJob(JobId){
             axios.post("http://localhost:8080/UserService/ApplyJob",{"id":parseInt(this.id),"jobid":parseInt(JobId)}).then((Response=>{
+                if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+                }
                 if(Response.data.data==="NeedResume"){
                     alert("申请工作前请先提交简历")
                 }else if(Response.data.data==="ApplySuccess"){

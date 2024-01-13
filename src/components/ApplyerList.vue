@@ -47,6 +47,10 @@ export default{
     methods:{
         CheckResume(UserId){
             axios.post("http://localhost:8080/HRService/GetResumeById",{"id":parseInt(UserId,10)},{ responseType: 'blob'}).then((Response=>{
+                if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+                    return
+                }
                 const blob = new Blob([Response.data], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
                 this.pdfData = url;
@@ -54,11 +58,17 @@ export default{
         },
         EmployeeApplyer(UserId){
             axios.post("http://localhost:8080/HRService/SelectUser",{"id":parseInt(UserId,10)}).then((Response=>{
+                if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+                }
                 alert(Response.data.data)
             }))
         },
         DeleteApplyer(UserId){
             axios.post("http://localhost:8080/HRService/DeleteUser",{"id":parseInt(UserId,10)}).then((Response=>{
+                if(Response.data.data==="UnAuthorization"){
+                    alert("No token")
+                }
                 alert(Response.data.data)
             }))
         }
