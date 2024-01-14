@@ -35,7 +35,9 @@ export default{
     },
     mounted(){
         this.id=this.$route.query.data
-        axios.post("http://localhost:8080/HRService/GetPostedJobs",{"id":parseInt(this.id,10)}).then((Response=>{
+        axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwtToken');
+        this.id=this.$route.query.data
+        axios.post("http://localhost:8080/HRService/GetPostedJobs",{"hid":parseInt(this.id,10)}).then((Response=>{
             this.Jobs=Response.data.data
         }))
     },
@@ -59,11 +61,12 @@ export default{
         },
         DeleteJob(JobId,index){
             axios.post("http://localhost:8080/HRService/DeleteJob",{"id":JobId}).then((Response=>{
-                if(Response.data.data==="UnAuthorization"){
+                if(Response.data.data[0]==="UnAuthorization"){
                     alert("No token")
                 }
-                
-                if(Response.data.data==="DeleteJob Success"){
+                sessionStorage.setItem('jwtToken',Response.data.data[0]);
+                axios.defaults.headers.common['Authorization'] = Response.data.data[0];
+                if(Response.data.data[1]==="DeleteJob Success"){
                     this.Jobs.splice(index,1);
                 }
             }))

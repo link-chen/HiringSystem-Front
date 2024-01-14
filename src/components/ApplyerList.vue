@@ -8,13 +8,13 @@
 </div>
 <div v-for="item in users" :key="item.Id">
     <br>
-    用户ID:{{ item.Id }}
+    用户ID:{{ item.UId }}
     <br>
     用户邮箱:{{ item.Email }}
     <br>
-    <button @click="CheckResume(item.Id)">查看候选人简历</button>
-    <button @click="EmployeeApplyer(item.Id)">录取候选人</button>
-    <button @click="DeleteApplyer(item.Id)">淘汰候选人</button>
+    <button @click="CheckResume(item.UId)">查看候选人简历</button>
+    <button @click="EmployeeApplyer(item.UId)">录取候选人</button>
+    <button @click="DeleteApplyer(item.UId)">淘汰候选人</button>
 </div>
 <div v-if="pdfData">
       <embed :src="pdfData" type="application/pdf" width="100%" height="600px" />
@@ -37,17 +37,17 @@ export default{
     mounted(){
         this.id=this.$route.query.data
         this.posted_by=this.$route.query.posted_by
-        axios.post("http://localhost:8080/HRService/GetPostedJobs",{"id":parseInt(this.posted_by,10)}).then((Response=>{
+        axios.post("http://localhost:8080/HRService/GetPostedJobs",{"uid":parseInt(this.posted_by,10)}).then((Response=>{
             this.Jobs=Response.data.data
         }))
-        axios.post("http://localhost:8080/HRService/GetUsersById",{"id":parseInt(this.id,10)}).then((Response=>{
+        axios.post("http://localhost:8080/HRService/GetUsersById",{"uid":parseInt(this.id,10)}).then((Response=>{
             this.users=Response.data.data
         }))
     },
     methods:{
         CheckResume(UserId){
-            axios.post("http://localhost:8080/HRService/GetResumeById",{"id":parseInt(UserId,10)},{ responseType: 'blob'}).then((Response=>{
-                if(Response.data.data==="UnAuthorization"){
+            axios.post("http://localhost:8080/HRService/GetResumeById",{"uid":parseInt(UserId,10)},{ responseType: 'blob'}).then((Response=>{
+                if(Response.data.data[0]==="UnAuthorization"){
                     alert("No token")
                     return
                 }
@@ -57,16 +57,16 @@ export default{
             }))
         },
         EmployeeApplyer(UserId){
-            axios.post("http://localhost:8080/HRService/SelectUser",{"id":parseInt(UserId,10)}).then((Response=>{
-                if(Response.data.data==="UnAuthorization"){
+            axios.post("http://localhost:8080/HRService/SelectUser",{"uid":parseInt(UserId,10)}).then((Response=>{
+                if(Response.data.data[0]==="UnAuthorization"){
                     alert("No token")
                 }
                 alert(Response.data.data)
             }))
         },
         DeleteApplyer(UserId){
-            axios.post("http://localhost:8080/HRService/DeleteUser",{"id":parseInt(UserId,10)}).then((Response=>{
-                if(Response.data.data==="UnAuthorization"){
+            axios.post("http://localhost:8080/HRService/DeleteUser",{"uid":parseInt(UserId,10)}).then((Response=>{
+                if(Response.data.data[0]==="UnAuthorization"){
                     alert("No token")
                 }
                 alert(Response.data.data)

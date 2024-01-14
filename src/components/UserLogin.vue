@@ -39,7 +39,7 @@ export default {
   methods: {
     login() {
       if (this.isAdmin === true) {
-        axios.post('http://localhost:8080/HRService/HRLogin', { "id": parseInt(this.usercount, 10), password: this.password }).then((Response => {
+        axios.post('http://localhost:8080/HRService/HRLogin', { "hid": parseInt(this.usercount, 10), password: this.password }).then((Response => {
           if (Response.data.data[1] === "Success") {
             sessionStorage.setItem('jwtToken',Response.data.data[0]);
             axios.defaults.headers.common['Authorization'] = Response.data.data[0];
@@ -50,7 +50,7 @@ export default {
           }
         }));
       } else {
-        axios.post('http://localhost:8080/UserService/Login', { "id": parseInt(this.usercount, 10), password: this.password }).then((Response => {
+        axios.post('http://localhost:8080/UserService/Login', { "uid": parseInt(this.usercount, 10), password: this.password }).then((Response => {
           if (Response.data.data[1] === "Success") {
             sessionStorage.setItem('jwtToken',Response.data.data[0]);
             axios.defaults.headers.common['Authorization'] = Response.data.data[0];

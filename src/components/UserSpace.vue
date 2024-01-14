@@ -35,7 +35,7 @@ export default{
     mounted(){
         this.id=this.$route.query.data
         axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwtToken');
-        axios.post('http://localhost:8080/UserService/SearchApplyedJob',{"id":parseInt(this.id)}).then((Response=>{
+        axios.post('http://localhost:8080/UserService/SearchApplyedJob',{"uid":parseInt(this.id)}).then((Response=>{
             if(Response.data.data==="UnAuthorization"){
                     alert("No Token")
                     return
@@ -68,7 +68,7 @@ export default{
 
             const formData = new FormData();
             formData.append('file', this.selectedFile);
-            formData.append('id',this.id)
+            formData.append('uid',this.id)
 
 
             // Replace the URL with your backend API endpoint
